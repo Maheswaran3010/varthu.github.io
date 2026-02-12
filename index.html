@@ -277,7 +277,7 @@
     function spawnHeart() {
         const h = document.createElement('div');
         h.className = 'heart';
-        h.innerText = ["❤️", "💖", "💝", "🤍", "💕"][Math.floor(Math.random() * 5)];
+        h.innerText = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","sexxy darling","chloo","kutty"][Math.floor(Math.random() * 10)];
         h.style.left = Math.random() * 100 + "vw";
         h.style.fontSize = Math.random() * 15 + 20 + "px";
         h.style.animationDuration = Math.random() * 2 + 3 + "s";
@@ -315,21 +315,7 @@
         document.getElementById('stageWho').classList.add('hidden');
         document.getElementById('stageLetter').classList.remove('hidden');
         const box = document.getElementById('letterBox');
-        const text=[
-"We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍",
-"Every day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙",
-"That one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨",
-"As days passed, we changed… we grew… and quietly our love grew with us 🌱",
-"The silly romantic tests we attended, and the late nights we spent talking — they are locked safely inside the secret vault of my heart 🔐",
-"The day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️",
-"That private beach where we took pictures… the waves, the wind, and you — it still feels unreal 🌊",
-"You preparing yourself for my sister’s marriage meant more to me than I ever said. I didn’t ruin anything intentionally… I only wanted to always be honest with you 🤍",
-"No matter what happened between us, one thing never changed — I always wanted you to be happy",
-"Maybe love is not always about staying… sometimes it's about remembering gently and wishing silently 🌙",
-"I don’t know where life will take us next, but a part of my heart will always smile when it thinks of you",
-"So today, I just wish you peace, warmth, and a life that treats you kindly",
-"Happy Valentine’s Day ❤️",
-];
+        const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights we spent talking — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels unreal 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. I didn't ruin anything intentionally… I only wanted to always be honest with you 🤍\n\nNo matter what happened between us, one thing never changed — I always wanted you to be happy\n\nMaybe love is not always about staying… sometimes it's about remembering gently and wishing silently 🌙\n\nI don't know where life will take us next, but a part of my heart will always smile when it thinks of you\n\nSo today, I just wish you peace, warmth, and a life that treats you kindly\n\nHappy Valentine's Day ❤️";
         let i = 0;
         function type() {
             if (i < text.length) {
