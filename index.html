@@ -229,14 +229,14 @@
     const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
     // --- AUDIO SETTINGS ---
-    // Replace with your actual audio links
-    const letterMusic = new Audio('maheswaran3010.github.io/Eppadi Vandhaayo.mp3'); 
-    const statusMusic = new Audio('maheswaran3010.github.io/Pularaadha-MassTamilan.org.mp3');
+    // Make sure these files are in the same folder as this HTML file
+    const letterMusic = new Audio('EppadiVandhaayo.mp3'); 
+    const statusMusic = new Audio('Pularaadha.mp3');
     
     letterMusic.loop = true;
     statusMusic.loop = true;
 
-    const myStatuses = ["../0.jpg", "../01.jpg", "../1.jpg", "../2.jpg", "../3.jpeg", "../4.jpeg", "../5.jpeg", "../6.jpeg", "../7.jpeg", "../8.jpeg", "../9.jpeg", "../10.jpeg"];
+    const myStatuses = ["0.jpg", "01.jpg", "1.jpg", "2.jpg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "8.jpeg", "9.jpeg", "10.jpeg"];
     const script = ["Hey sexxy darling ...😘", "inaiku valentine's day ah?", "Happy valentine's day 💖", "So I made something for you", "love.var"];
     let step = 0;
     let heartInterval;
@@ -271,6 +271,10 @@
     }
 
     function startSurprise() { 
+        // BROWSER BYPASS: Users must click to start, so we use this click to "warm up" the music
+        letterMusic.play().then(() => { letterMusic.pause(); }).catch(e => console.log("Music blocked"));
+        statusMusic.play().then(() => { statusMusic.pause(); }).catch(e => console.log("Music blocked"));
+
         document.getElementById('stageEnvelope').classList.remove('hidden'); 
         if(heartInterval) clearInterval(heartInterval);
         heartInterval = setInterval(spawnHeart, 400); 
@@ -335,27 +339,26 @@
         document.getElementById('stageLetter').classList.remove('hidden');
         
         // Start Letter Music
-        letterMusic.play().catch(e => console.log("Audio blocked"));
+        letterMusic.currentTime = 0;
+        letterMusic.play().catch(err => console.log("Audio play error:", err));
 
         const box = document.getElementById('letterBox');
-        const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights we spent talking — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels unreal 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. I didn't ruin anything intentionally… I only wanted to always be honest with you 🤍\n\nNo matter what happened between us, one thing never changed — I always wanted you to be happy\n\nMaybe love is not always about staying… sometimes it's about remembering gently and wishing silently 🌙\n\nI don't know where life will take us next, but a part of my heart will always smile when it thinks of you\n\nSo today, I just wish you peace, warmth, and a life that treats you kindly\n\nHappy Valentine's Day ❤️";
+        const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights fights we spent crying — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels Magical 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. \n\n I always wanted you to be happy\n\nMaybe love is not always about staying romantic sometimes it's about caring, fighting and mainly flirting 🌙\n\nenakku yepaiyum nee en kuda erukanum as you always say you are mine chellamaee\n\nSo today, I just wish you Happy Valentine's Day ❤️ chellamae \n\n-Reyyy";
         let i = 0;
         function type() { 
             if (i < text.length) { 
                 box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i); 
                 i++; 
                 box.scrollTop = box.scrollHeight; 
-                setTimeout(type, 100); // 100ms for slow typing
+                setTimeout(type, 100); 
             } 
         }
         type();
     }
 
     function finishLetter() {
-        // Stop Letter Music
         letterMusic.pause();
         letterMusic.currentTime = 0;
-
         clearInterval(heartInterval);
         document.getElementById('stageLetter').classList.add('hidden');
         profilePic.classList.add('has-status');
@@ -379,8 +382,8 @@
     function startStatus() {
         if (!profilePic.classList.contains('has-status')) return;
         
-        // Start Status Music
-        statusMusic.play().catch(e => console.log("Audio blocked"));
+        statusMusic.currentTime = 0;
+        statusMusic.play().catch(e => console.log("Status music blocked"));
 
         document.getElementById('statusViewer').style.display = 'flex';
         setupProgressBars();
@@ -435,10 +438,8 @@
     }
 
     function closeStatus() {
-        // Stop Status Music
         statusMusic.pause();
         statusMusic.currentTime = 0;
-
         document.getElementById('statusViewer').style.display = 'none';
         clearInterval(statusInterval);
     }
