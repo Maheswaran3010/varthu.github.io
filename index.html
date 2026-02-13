@@ -26,58 +26,60 @@
             overflow: hidden;
         }
 
-        /* HEARTS (Background Layer) */
+        /* HEARTS LAYERED BETWEEN WALLPAPER AND BUBBLES */
         .heart {
             position: fixed; bottom: -50px;
-            pointer-events: none;
-            z-index: 1; /* Lowest Z-index to stay behind everything */
+            pointer-events: none; 
+            z-index: 2; /* Above background, below header/input */
             animation: moveUp linear forwards;
+            opacity: 0.8;
         }
 
         @keyframes moveUp {
-            from { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(0); opacity: 0.8; }
             to { transform: translateY(-115dvh); opacity: 0; }
         }
 
-        /* APP CONTAINER (Foreground Layer) */
         #app {
             display: flex; flex-direction: column;
             height: 100dvh; width: 100%;
-            position: relative;
-            background: transparent; /* Allows hearts to be seen */
-            z-index: 10;
+            position: relative; z-index: 10;
         }
 
         .header {
             height: 60px; background: var(--header-bg);
             display: flex; align-items: center; padding: 0 15px;
             flex-shrink: 0; color: white; border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 20;
         }
 
         .dp {
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 45px; height: 45px; border-radius: 50%;
             background: #6a7175 url('dp.jpg') center/cover;
-            margin-right: 12px;
+            margin-right: 12px; transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
-        /* CHAT AREA */
+        .dp.has-status {
+            border: 2.5px solid var(--accent);
+            padding: 2px; background-clip: content-box; cursor: pointer;
+        }
+
         #chatArea {
             flex: 1; overflow-y: auto; padding: 10px 15px;
             background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-blend-mode: overlay;
+            background-blend-mode: overlay; 
             background-color: rgba(11, 20, 26, 0.9); /* Slight transparency to see hearts */
             display: flex; flex-direction: column;
-            scrollbar-width: none;
+            position: relative;
         }
-        #chatArea::-webkit-scrollbar { display: none; }
 
         .msg {
             max-width: 85%; padding: 8px 10px 6px 12px;
             font-size: 15.5px; line-height: 1.4; border-radius: 8px;
-            color: white; margin: 6px 0;
-            display: flex; flex-direction: column;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            animation: pop 0.2s ease-out;
+            color: white; margin: 6px 0; display: flex; flex-direction: column;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.2); animation: pop 0.2s ease-out;
+            position: relative; z-index: 5; /* Messages stay above hearts */
         }
         @keyframes pop { from { transform: scale(0.9); opacity: 0; } }
 
@@ -86,12 +88,10 @@
 
         .meta {
             align-self: flex-end; display: flex; align-items: center;
-            font-size: 11px; color: var(--meta-color);
-            margin-top: 2px; margin-left: 20px;
+            font-size: 11px; color: var(--meta-color); margin-top: 2px; margin-left: 20px;
         }
         .ticks { color: #53bdeb; margin-left: 3px; font-size: 14px; }
 
-        /* TYPING AREA (Must be z-index 20 to be in front) */
         .input-bar {
             background: var(--header-bg); padding: 10px 12px;
             display: flex; align-items: center; gap: 8px; flex-shrink: 0;
@@ -101,22 +101,9 @@
 
         #userInput {
             flex: 1; background: var(--input-bg); padding: 12px 16px;
-            border-radius: 24px; color: white; outline: none;
-            max-height: 120px; overflow-y: auto; font-size: 16px;
+            border-radius: 24px; color: white; outline: none; font-size: 16px;
         }
 
-        #userInput:empty:before {
-            content: "Type a message"; color: var(--meta-color);
-        }
-
-        .send-btn {
-            width: 48px; height: 48px; background: var(--accent);
-            border: none; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; flex-shrink: 0;
-        }
-
-        /* STAGES */
         .full-screen {
             position: fixed; inset: 0; background: var(--bg-dark);
             z-index: 100; display: flex; flex-direction: column;
@@ -125,31 +112,46 @@
 
         .btn {
             background: #ff4d6d; color: white; border: none;
-            padding: 15px 35px; border-radius: 50px;
-            font-size: 18px; font-weight: 600; margin: 10px;
+            padding: 15px 35px; border-radius: 50px; font-weight: 600; margin: 10px;
+            cursor: pointer; transition: transform 0.2s;
         }
 
         #letterContainer {
-            width: 90%; height: 65dvh; background: #fff5f7;
-            border-radius: 20px; position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            z-index: 110;
+            width: 95%; height: 75dvh; background: #fff5f7;
+            border-radius: 20px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
 
         #letterBox {
-            width: 100%; height: 100%; padding: 30px;
+            width: 100%; height: 100%; padding: 25px;
             color: #d63384; font-family: 'Dancing Script', cursive;
-            font-size: 26px; line-height: 1.4; overflow-y: auto;
-            text-align: left; border-radius: 20px;
+            font-size: 24px; overflow-y: auto; border-radius: 20px; text-align: left;
         }
 
-        .close-x {
+        .close-btn {
             position: absolute; top: -15px; right: -15px;
             width: 40px; height: 40px; background: #ff4d6d;
             color: white; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center;
-            border: 3px solid #fff; z-index: 120;
+            justify-content: center; align-items: center; border: 3px solid #fff; cursor: pointer;
         }
+
+        /* STATUS SYSTEM */
+        #statusViewer {
+            position: fixed; inset: 0; background: black;
+            z-index: 200; display: none; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        .status-header {
+            position: absolute; top: 10px; width: 100%; padding: 10px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 215;
+        }
+        .progress-bars { display: flex; gap: 5px; width: 100%; }
+        .bar-bg { flex: 1; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; }
+        .bar-fill { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
+        .bar-fill.completed { width: 100% !important; }
+        
+        .status-nav-container { position: absolute; inset: 0; display: flex; z-index: 210; }
+        .nav-zone { flex: 1; height: 100%; }
+        .status-content { width: 100%; max-height: 85vh; object-fit: contain; }
 
         .hidden { display: none !important; }
     </style>
@@ -158,19 +160,19 @@
 
 <div id="app">
     <div class="header">
-        <div class="dp"></div>
+        <div class="dp" id="profilePic" onclick="startStatus()"></div>
         <div>
             <div style="font-weight: 500; font-size: 17px;">Kedi 💚</div>
-            <div id="status" style="font-size: 12px; color: var(--meta-color);">online</div>
+            <div id="statusLabel" style="font-size: 12px; color: var(--meta-color);">online</div>
         </div>
     </div>
 
     <div id="chatArea"></div>
 
     <div class="input-bar">
-        <div id="userInput" contenteditable="true"></div>
-        <button class="send-btn" onclick="handleSend()">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+        <div id="userInput" contenteditable="true" onfocus="if(this.innerText=='Type a message')this.innerText=''">Type a message</div>
+        <button class="send-btn" style="background:none; border:none;" onclick="handleSend()">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="var(--accent)"><path d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
         </button>
     </div>
 
@@ -190,116 +192,97 @@
     <div id="stageWho" class="full-screen hidden">
         <h2 style="color: white; margin-bottom: 20px; font-family: 'Dancing Script'; font-size: 32px;">Identify yourself...</h2>
         <button class="btn" onclick="showLetter()">I am Kedi</button>
-        <button class="btn" onclick="location.reload()" style="background: #6a7175;">Someone else</button>
     </div>
 
     <div id="stageLetter" class="full-screen hidden">
         <div id="letterContainer">
-            <div class="close-x" onclick="location.reload()">✕</div>
+            <div class="close-btn" onclick="finishLetter()">✕</div>
             <div id="letterBox"></div>
         </div>
     </div>
 </div>
 
+<div id="statusViewer">
+    <div class="status-header">
+        <div class="progress-bars" id="progressBars"></div>
+        <div style="color: white; font-size: 14px; margin-left: 5px; font-weight: 500;">Kedi 💚</div>
+    </div>
+    <div class="status-nav-container">
+        <div class="nav-zone" onclick="prevStatus()"></div>
+        <div class="nav-zone" onclick="nextStatusManual()"></div>
+    </div>
+    <div class="close-btn" style="top: 45px; right: 20px; z-index: 220;" onclick="closeStatus()">✕</div>
+    <img id="statusImg" class="status-content" src="">
+</div>
+
 <script>
     const chatArea = document.getElementById('chatArea');
     const userInput = document.getElementById('userInput');
-    const status = document.getElementById('status');
+    const statusLabel = document.getElementById('statusLabel');
+    const profilePic = document.getElementById('profilePic');
     const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
-    const script = [
-        "Hey sexxy darling ...😘",
-        "inaiku valentine's day ah?",
-        "Happy valentine's day 💖",
-        "So I made something for you",
-        "love.var"
+    // Add your status image URLs here
+    const myStatuses = [
+        "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800", 
+        "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=800"
     ];
 
+    const script = ["Hey sexxy darling ...😘", "inaiku valentine's day ah?", "Happy valentine's day 💖", "So I made something for you", "love.var"];
     let step = 0;
 
-    function getTime() {
-        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
+    function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 
     async function kediType() {
         if (step >= script.length) return;
-        status.innerText = "typing...";
+        statusLabel.innerText = "typing...";
         await new Promise(r => setTimeout(r, 1500));
-        
         const isLink = script[step] === "love.var";
         const bubble = document.createElement('div');
         bubble.className = "msg right";
-        
-        const textSpan = document.createElement('span');
-        textSpan.innerHTML = isLink ? `<span style="color:#53bdeb; text-decoration:underline; font-weight:bold;">${script[step]}</span>` : script[step];
-        if(isLink) textSpan.onclick = startSurprise;
-        
-        const meta = document.createElement('div');
-        meta.className = "meta";
-        meta.innerHTML = getTime();
-        
-        bubble.appendChild(textSpan);
-        bubble.appendChild(meta);
+        bubble.innerHTML = `<span>${isLink ? `<b style="color:#53bdeb; text-decoration:underline; cursor:pointer;" onclick="startSurprise()">${script[step]}</b>` : script[step]}</span><div class="meta">${getTime()}</div>`;
         chatArea.appendChild(bubble);
-        popSound.play().catch(() => {});
+        popSound.play().catch(()=>{});
         chatArea.scrollTop = chatArea.scrollHeight;
-        status.innerText = "online";
+        statusLabel.innerText = "online";
     }
 
     function handleSend() {
         const text = userInput.innerText.trim();
-        if (!text) return;
+        if (!text || text === "Type a message") return;
         userInput.innerText = "";
-        
         const bubble = document.createElement('div');
         bubble.className = "msg left";
-        const textSpan = document.createElement('span');
-        textSpan.innerText = text;
-        const meta = document.createElement('div');
-        meta.className = "meta";
-        meta.innerHTML = `${getTime()} <span class="ticks">✓✓</span>`;
-        
-        bubble.appendChild(textSpan);
-        bubble.appendChild(meta);
+        bubble.innerHTML = `<span>${text}</span><div class="meta">${getTime()} <span class="ticks">✓✓</span></div>`;
         chatArea.appendChild(bubble);
         chatArea.scrollTop = chatArea.scrollHeight;
-
         step++;
         setTimeout(kediType, 800);
     }
 
-    function startSurprise() {
-        document.getElementById('stageEnvelope').classList.remove('hidden');
-        // Hearts start spawning in the background layer
-        setInterval(spawnHeart, 350);
+    function startSurprise() { 
+        document.getElementById('stageEnvelope').classList.remove('hidden'); 
+        setInterval(spawnHeart, 300); 
     }
 
     function spawnHeart() {
-        const h = document.createElement('div');
-        h.className = 'heart';
-        h.innerText = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","sexxy darling","chloo","kutty"][Math.floor(Math.random() * 10)];
-        h.style.left = Math.random() * 100 + "vw";
+        const h = document.createElement('div'); h.className = 'heart';
+        h.innerText = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","kutty"][Math.floor(Math.random() * 8)];
+        h.style.left = Math.random() * 100 + "vw"; 
         h.style.fontSize = Math.random() * 15 + 20 + "px";
-        h.style.animationDuration = Math.random() * 2 + 3 + "s";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 5000);
+        h.style.animationDuration = Math.random() * 2 + 4 + "s";
+        document.body.appendChild(h); 
+        setTimeout(() => h.remove(), 6000);
     }
 
-    function showValentine() {
-        document.getElementById('stageEnvelope').classList.add('hidden');
-        document.getElementById('stageValentine').classList.remove('hidden');
-    }
-
-    function showWho() {
-        document.getElementById('stageValentine').classList.add('hidden');
-        document.getElementById('stageWho').classList.remove('hidden');
-    }
-
+    function showValentine() { document.getElementById('stageEnvelope').classList.add('hidden'); document.getElementById('stageValentine').classList.remove('hidden'); }
+    function showWho() { document.getElementById('stageValentine').classList.add('hidden'); document.getElementById('stageWho').classList.remove('hidden'); }
+    
+    // NO Button logic
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
     let scale = 1;
-
-    const moveNo = (e) => {
+    noBtn.onmouseover = noBtn.ontouchstart = (e) => {
         if(e.type === 'touchstart') e.preventDefault();
         scale += 0.4;
         yesBtn.style.transform = `scale(${scale})`;
@@ -308,24 +291,94 @@
         noBtn.style.left = Math.random() * 70 + 10 + '%';
     };
 
-    noBtn.addEventListener('touchstart', moveNo);
-    noBtn.addEventListener('mouseover', moveNo);
-
     function showLetter() {
         document.getElementById('stageWho').classList.add('hidden');
         document.getElementById('stageLetter').classList.remove('hidden');
         const box = document.getElementById('letterBox');
         const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights we spent talking — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels unreal 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. I didn't ruin anything intentionally… I only wanted to always be honest with you 🤍\n\nNo matter what happened between us, one thing never changed — I always wanted you to be happy\n\nMaybe love is not always about staying… sometimes it's about remembering gently and wishing silently 🌙\n\nI don't know where life will take us next, but a part of my heart will always smile when it thinks of you\n\nSo today, I just wish you peace, warmth, and a life that treats you kindly\n\nHappy Valentine's Day ❤️";
         let i = 0;
-        function type() {
-            if (i < text.length) {
-                box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
-                i++;
-                box.scrollTop = box.scrollHeight;
-                setTimeout(type, 50);
-            }
-        }
+        function type() { if (i < text.length) { box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i); i++; box.scrollTop = box.scrollHeight; setTimeout(type, 35); } }
         type();
+    }
+
+    function finishLetter() {
+        document.getElementById('stageLetter').classList.add('hidden');
+        profilePic.classList.add('has-status');
+        setTimeout(async () => {
+            statusLabel.innerText = "typing..."; await new Promise(r => setTimeout(r, 2000));
+            const bubble = document.createElement('div');
+            bubble.className = "msg right";
+            bubble.innerHTML = `<span>status paarunga thangooo 😍</span><div class="meta">${getTime()}</div>`;
+            chatArea.appendChild(bubble);
+            popSound.play().catch(()=>{});
+            chatArea.scrollTop = chatArea.scrollHeight;
+            statusLabel.innerText = "online";
+        }, 1000);
+    }
+
+    // STATUS LOGIC
+    let currentStatusIdx = 0;
+    let statusInterval;
+    let startTime;
+    const STATUS_DURATION = 30000;
+
+    function startStatus() {
+        if (!profilePic.classList.contains('has-status')) return;
+        document.getElementById('statusViewer').style.display = 'flex';
+        setupProgressBars();
+        showStatus(0);
+    }
+
+    function setupProgressBars() {
+        const container = document.getElementById('progressBars');
+        container.innerHTML = '';
+        myStatuses.forEach(() => {
+            const bg = document.createElement('div');
+            bg.className = 'bar-bg';
+            bg.innerHTML = '<div class="bar-fill"></div>';
+            container.appendChild(bg);
+        });
+    }
+
+    function showStatus(index) {
+        if (index >= myStatuses.length) { closeStatus(); return; }
+        currentStatusIdx = index;
+        const img = document.getElementById('statusImg');
+        const fills = document.querySelectorAll('.bar-fill');
+        img.src = myStatuses[currentStatusIdx];
+
+        fills.forEach((fill, i) => {
+            fill.style.width = '0%';
+            fill.classList.remove('completed');
+            if (i < currentStatusIdx) fill.classList.add('completed');
+        });
+
+        startTime = Date.now();
+        clearInterval(statusInterval);
+        statusInterval = setInterval(() => {
+            let elapsed = Date.now() - startTime;
+            let progress = (elapsed / STATUS_DURATION) * 100;
+            fills[currentStatusIdx].style.width = Math.min(progress, 100) + '%';
+            if (elapsed >= STATUS_DURATION) nextStatus();
+        }, 50);
+    }
+
+    function nextStatus() {
+        currentStatusIdx++;
+        if (currentStatusIdx < myStatuses.length) showStatus(currentStatusIdx);
+        else closeStatus();
+    }
+
+    function nextStatusManual() { clearInterval(statusInterval); nextStatus(); }
+    function prevStatus() {
+        clearInterval(statusInterval);
+        if (currentStatusIdx > 0) showStatus(currentStatusIdx - 1);
+        else showStatus(0);
+    }
+
+    function closeStatus() {
+        document.getElementById('statusViewer').style.display = 'none';
+        clearInterval(statusInterval);
     }
 
     window.onload = kediType;
