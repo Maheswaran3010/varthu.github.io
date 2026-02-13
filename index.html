@@ -19,32 +19,53 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body {
-            height: 100%; width: 100%;
+        body {
+            height: 100vh; width: 100vw;
             background-color: var(--bg-dark);
             font-family: 'Inter', sans-serif;
             overflow: hidden;
         }
 
-        .heart {
-            position: fixed; 
-            bottom: -100px;
-            pointer-events: none; 
-            z-index: 102; 
-            animation: moveUp linear forwards;
-            font-family: 'Dancing Script', cursive;
-            font-weight: bold;
-            opacity: 0.8; 
-        }
-        @keyframes moveUp {
-            from { transform: translateY(0); opacity: 0.8; }
-            to { transform: translateY(-120dvh); opacity: 0; }
+        /* --- Floating Hearts/Text Section --- */
+        #heartContainer {
+            position: fixed; inset: 0; pointer-events: none;
+            z-index: 1000; opacity: 0.2; transition: opacity 1s ease-in-out;
         }
 
+        .heart {
+            position: absolute; bottom: -100px;
+            animation: moveUp linear forwards;
+            font-family: 'Dancing Script', cursive;
+            font-weight: bold; color: #ff4d6d;
+            white-space: nowrap; text-shadow: 0 0 5px rgba(255, 77, 109, 0.3);
+        }
+
+        @keyframes moveUp {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-115dvh); opacity: 0; }
+        }
+
+        /* --- Heart Bomb Animation --- */
+        .bomb-heart {
+            position: fixed; top: 50%; left: 50%;
+            pointer-events: none; z-index: 3001;
+            animation: heartExplode 2.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        @keyframes heartExplode {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* --- UI Layout --- */
         #app {
             display: flex; flex-direction: column;
             height: 100dvh; width: 100%;
             position: relative; z-index: 10;
+            transition: opacity 1.5s ease-out;
         }
 
         .header {
@@ -64,15 +85,14 @@
         .dp.has-status {
             border: 2.5px solid var(--accent);
             padding: 2px; background-clip: content-box; cursor: pointer;
+            box-shadow: 0 0 10px var(--accent);
         }
 
         #chatArea {
             flex: 1; overflow-y: auto; padding: 10px 15px;
             background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-blend-mode: overlay; 
-            background-color: rgba(11, 20, 26, 0.9);
+            background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.95);
             display: flex; flex-direction: column;
-            position: relative;
         }
 
         .msg {
@@ -80,10 +100,10 @@
             font-size: 15.5px; line-height: 1.4; border-radius: 8px;
             color: white; margin: 6px 0; display: flex; flex-direction: column;
             box-shadow: 0 1px 1px rgba(0,0,0,0.2); animation: pop 0.2s ease-out;
-            position: relative; z-index: 10;
+            position: relative; z-index: 15;
         }
-        @keyframes pop { from { transform: scale(0.9); opacity: 0; } }
 
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .left { align-self: flex-end; background: var(--wa-green); border-top-right-radius: 0; }
         .right { align-self: flex-start; background: var(--wa-incoming); border-top-left-radius: 0; }
 
@@ -103,11 +123,11 @@
         #userInput {
             flex: 1; background: var(--input-bg); padding: 12px 16px;
             border-radius: 24px; color: white; outline: none; font-size: 16px;
+            min-height: 20px;
         }
 
         .full-screen {
-            position: fixed; inset: 0; 
-            background: var(--bg-dark);
+            position: fixed; inset: 0; background: var(--bg-dark);
             z-index: 100; display: flex; flex-direction: column;
             justify-content: center; align-items: center; padding: 20px;
         }
@@ -115,29 +135,29 @@
         .btn {
             background: #ff4d6d; color: white; border: none;
             padding: 15px 35px; border-radius: 50px; font-weight: 600; margin: 10px;
-            cursor: pointer; transition: transform 0.2s;
-            z-index: 110;
+            cursor: pointer; transition: transform 0.2s; z-index: 110;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
         }
 
         #letterContainer {
             width: 95%; height: 75dvh; background: #fff5f7;
             border-radius: 20px; position: relative; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            z-index: 105; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 105; 
         }
 
         #letterBox {
             width: 100%; height: 100%; padding: 25px;
             color: #d63384; font-family: 'Dancing Script', cursive;
-            font-size: 24px; overflow-y: auto; border-radius: 20px; text-align: left;
+            font-size: 24px; overflow-y: auto; border-radius: 20px;
+            white-space: pre-wrap; line-height: 1.6;
         }
 
         .close-btn {
             position: absolute; top: -15px; right: -15px;
             width: 40px; height: 40px; background: #ff4d6d;
             color: white; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; border: 3px solid #fff; cursor: pointer;
-            z-index: 115;
+            justify-content: center; align-items: center; border: 3px solid #fff; 
+            cursor: pointer; z-index: 115; font-weight: bold;
         }
 
         #statusViewer {
@@ -163,6 +183,8 @@
 </head>
 <body>
 
+<div id="heartContainer"></div>
+
 <div id="app">
     <div class="header">
         <div class="dp" id="profilePic" onclick="startStatus()"></div>
@@ -182,20 +204,20 @@
     </div>
 
     <div id="stageEnvelope" class="full-screen hidden">
-        <div style="font-size: 100px; cursor: pointer; z-index: 110;" onclick="showValentine()">💌</div>
-        <p style="color: white; margin-top: 20px; font-family: 'Dancing Script'; font-size: 26px; z-index: 110;">Touch the heart</p>
+        <div style="font-size: 100px; cursor: pointer; transition: transform 0.3s;" onclick="showValentine()" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">💌</div>
+        <p style="color: white; margin-top: 20px; font-family: 'Dancing Script'; font-size: 26px;">Touch the heart</p>
     </div>
 
     <div id="stageValentine" class="full-screen hidden">
-        <h2 style="color: white; margin-bottom: 30px; font-family: 'Dancing Script'; font-size: 36px; z-index: 110;">Will you be my Valentine? 🤍</h2>
-        <div style="display: flex; gap: 15px; position: relative; width: 100%; justify-content: center; z-index: 110;">
+        <h2 style="color: white; margin-bottom: 30px; font-family: 'Dancing Script'; font-size: 36px; text-align: center;">Will you be my Valentine? 🤍</h2>
+        <div style="display: flex; gap: 15px; position: relative; width: 100%; justify-content: center;">
             <button class="btn" id="yesBtn" onclick="showWho()">Yes</button>
             <button class="btn" id="noBtn" style="background: #6a7175;">No</button>
         </div>
     </div>
 
     <div id="stageWho" class="full-screen hidden">
-        <h2 style="color: white; margin-bottom: 20px; font-family: 'Dancing Script'; font-size: 32px; z-index: 110;">Yaarupa neengaa...</h2>
+        <h2 style="color: white; margin-bottom: 20px; font-family: 'Dancing Script'; font-size: 32px;">Yaarupa neengaa...</h2>
         <button class="btn" onclick="showLetter()">Kedi</button>
         <button class="btn" onclick="accessDenied()">Varthuuu</button>
     </div>
@@ -222,75 +244,85 @@
 </div>
 
 <script>
+    /* ========= CONFIG & STATE ========= */
+    const FINAL_NAME = "Kedi";
     const chatArea = document.getElementById('chatArea');
     const userInput = document.getElementById('userInput');
     const statusLabel = document.getElementById('statusLabel');
     const profilePic = document.getElementById('profilePic');
+    const heartContainer = document.getElementById('heartContainer');
+    
     const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
-
-    // --- AUDIO SETTINGS ---
-    // Make sure these files are in the same folder as this HTML file
     const letterMusic = new Audio('EppadiVandhaayo.mp3'); 
     const statusMusic = new Audio('Pularaadha.mp3');
-    
     letterMusic.loop = true;
     statusMusic.loop = true;
 
     const myStatuses = ["0.jpg", "01.jpg", "1.jpg", "2.jpg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "8.jpeg", "9.jpeg", "10.jpeg"];
     const script = ["Hey sexxy darling ...😘", "inaiku valentine's day ah?", "Happy valentine's day 💖", "So I made something for you", "love.var"];
+    
     let step = 0;
-    let heartInterval;
+    let heartInterval = null;
 
     function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 
-    async function kediType() {
-        if (step >= script.length) return;
+    /* ========= CHAT LOGIC ========= */
+    async function kediType(msgText = null) {
         statusLabel.innerText = "typing...";
         await new Promise(r => setTimeout(r, 1500));
-        const isLink = script[step] === "love.var";
+        
+        const textToDisplay = msgText || script[step];
+        const isLink = textToDisplay === "love.var";
+        
         const bubble = document.createElement('div');
         bubble.className = "msg right";
-        bubble.innerHTML = `<span>${isLink ? `<b style="color:#53bdeb; text-decoration:underline; cursor:pointer;" onclick="startSurprise()">${script[step]}</b>` : script[step]}</span><div class="meta">${getTime()}</div>`;
+        bubble.innerHTML = `<span>${isLink ? `<b style="color:#53bdeb; text-decoration:underline; cursor:pointer;" onclick="startSurprise()">${textToDisplay}</b>` : textToDisplay}</span><div class="meta">${getTime()}</div>`;
+        
         chatArea.appendChild(bubble);
         popSound.play().catch(()=>{});
         chatArea.scrollTop = chatArea.scrollHeight;
         statusLabel.innerText = "online";
     }
 
-    function handleSend() {
-        const text = userInput.innerText.trim();
-        if (!text || text === "Type a message") return;
-        userInput.innerText = "";
-        const bubble = document.createElement('div');
-        bubble.className = "msg left";
-        bubble.innerHTML = `<span>${text}</span><div class="meta">${getTime()} <span class="ticks">✓✓</span></div>`;
-        chatArea.appendChild(bubble);
-        chatArea.scrollTop = chatArea.scrollHeight;
+    /* Replace the old handleSend with this one */
+function handleSend() {
+    const text = userInput.innerText.trim();
+    if (!text || text === "Type a message") return;
+    
+    userInput.innerText = "";
+    const bubble = document.createElement('div');
+    bubble.className = "msg left";
+    bubble.innerHTML = `<span>${text}</span><div class="meta">${getTime()} <span class="ticks">✓✓</span></div>`;
+    
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+    
+    if (step < script.length - 1) {
         step++;
-        setTimeout(kediType, 800);
+        setTimeout(() => kediType(), 800);
+    } else {
+        // This will now trigger the ending regardless of what you type!
+        setTimeout(triggerHeartBombSequence, 2000);
     }
+}
 
+    /* ========= SURPRISE / ENVELOPE FLOW ========= */
     function startSurprise() { 
-        // BROWSER BYPASS: Users must click to start, so we use this click to "warm up" the music
-        letterMusic.play().then(() => { letterMusic.pause(); }).catch(e => console.log("Music blocked"));
-        statusMusic.play().then(() => { statusMusic.pause(); }).catch(e => console.log("Music blocked"));
-
         document.getElementById('stageEnvelope').classList.remove('hidden'); 
+        heartContainer.style.opacity = "1";
         if(heartInterval) clearInterval(heartInterval);
         heartInterval = setInterval(spawnHeart, 400); 
     }
 
     function spawnHeart() {
         const h = document.createElement('div'); h.className = 'heart';
-        const items = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","kutty","sexxy darling","Kedi","bujuk bujuk","Thanga mailu","Sexy doll","Boobiee kuty","Kedi paiyaa","Keddi papu"];
+        const items = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","kutty","sexxy darling","bujuk bujuk","Thanga mailu","Sexy doll","Boobiee kuty","Kedi paiyaa"];
         h.innerText = items[Math.floor(Math.random() * items.length)];
-        h.style.color = "#a01a58"; 
-        if(h.innerText.length < 3) h.style.color = "#700a0a"; 
-        h.style.left = Math.random() * 100 + "vw"; 
-        h.style.fontSize = Math.random() * 10 + 20 + "px";
-        h.style.animationDuration = Math.random() * 2 + 5 + "s";
-        document.body.appendChild(h); 
-        setTimeout(() => h.remove(), 7000);
+        h.style.left = Math.random() * 90 + "vw"; 
+        h.style.fontSize = Math.random() * 10 + 22 + "px";
+        h.style.animationDuration = Math.random() * 2 + 4 + "s";
+        heartContainer.appendChild(h);
+        setTimeout(() => h.remove(), 6000);
     }
 
     function showValentine() { 
@@ -305,23 +337,11 @@
     
     function accessDenied() {
         alert("Sorry ungaluku ulla idam ila getout");
-        clearInterval(heartInterval);
         document.getElementById('stageWho').classList.add('hidden');
-        document.getElementById('stageEnvelope').classList.add('hidden');
-        document.getElementById('stageValentine').classList.add('hidden');
-        setTimeout(async () => {
-            statusLabel.innerText = "typing..."; 
-            await new Promise(r => setTimeout(r, 2000));
-            const bubble = document.createElement('div');
-            bubble.className = "msg right";
-            bubble.innerHTML = `<span>Ozunga option choose panu d venna mavalae 🙄</span><div class="meta">${getTime()}</div>`;
-            chatArea.appendChild(bubble);
-            popSound.play().catch(()=>{});
-            chatArea.scrollTop = chatArea.scrollHeight;
-            statusLabel.innerText = "online";
-        }, 800);
+        setTimeout(() => kediType("Ozunga option choose panu d venna mavalae 🙄"), 800);
     }
 
+    /* ========= NO BUTTON ESCAPE ========= */
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
     let scale = 1;
@@ -334,23 +354,24 @@
         noBtn.style.left = Math.random() * 70 + 10 + '%';
     };
 
+    /* ========= LETTER LOGIC ========= */
     function showLetter() {
+        heartContainer.style.opacity = "0.2";
         document.getElementById('stageWho').classList.add('hidden');
         document.getElementById('stageLetter').classList.remove('hidden');
-        
-        // Start Letter Music
-        letterMusic.currentTime = 0;
-        letterMusic.play().catch(err => console.log("Audio play error:", err));
+        letterMusic.play().catch(e => {});
 
         const box = document.getElementById('letterBox');
-        const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights fights we spent crying — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels Magical 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. \n\n I always wanted you to be happy\n\nMaybe love is not always about staying romantic sometimes it's about caring, fighting and mainly flirting 🌙\n\nenakku yepaiyum nee en kuda erukanum as you always say you are mine chellamaee\n\nSo today, I just wish you Happy Valentine's Day ❤️ chellamae \n\n-Reyyy";
+        box.innerHTML = "";
+        const text = "We started our journey with affection... and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning... that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed... we grew... and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights fights we spent crying — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before... but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures... the waves, the wind, and you — it still feels Magical 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. \n\nI always wanted you to be happy\n\nMaybe love is not always about staying romantic sometimes it's about caring, fighting and mainly flirting ✨\n\nenakku yepaiyum nee en kuda erukanum as you always say you are mine chellamaee\n\nSo today, I just wish you Happy Valentine's Day ❤️ chellamae \n\n-Reyyy";
+        
         let i = 0;
         function type() { 
             if (i < text.length) { 
                 box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i); 
                 i++; 
                 box.scrollTop = box.scrollHeight; 
-                setTimeout(type, 100); 
+                setTimeout(type, 110);
             } 
         }
         type();
@@ -358,33 +379,24 @@
 
     function finishLetter() {
         letterMusic.pause();
-        letterMusic.currentTime = 0;
-        clearInterval(heartInterval);
         document.getElementById('stageLetter').classList.add('hidden');
+        if(heartInterval) { clearInterval(heartInterval); heartInterval = null; }
+        heartContainer.innerHTML = ""; 
+        heartContainer.style.opacity = "0.2";
         profilePic.classList.add('has-status');
-        setTimeout(async () => {
-            statusLabel.innerText = "typing..."; await new Promise(r => setTimeout(r, 2000));
-            const bubble = document.createElement('div');
-            bubble.className = "msg right";
-            bubble.innerHTML = `<span>status paarunga thangooo 😍</span><div class="meta">${getTime()}</div>`;
-            chatArea.appendChild(bubble);
-            popSound.play().catch(()=>{});
-            chatArea.scrollTop = chatArea.scrollHeight;
-            statusLabel.innerText = "online";
-        }, 1000);
+        setTimeout(() => kediType("status paarunga thangooo 😍"), 1000);
     }
 
+    /* ========= STATUS SYSTEM ========= */
     let currentStatusIdx = 0;
     let statusInterval;
     let startTime;
-    const STATUS_DURATION = 30000;
+    const STATUS_DURATION = 21833; 
 
     function startStatus() {
         if (!profilePic.classList.contains('has-status')) return;
-        
         statusMusic.currentTime = 0;
-        statusMusic.play().catch(e => console.log("Status music blocked"));
-
+        statusMusic.play().catch(e => {});
         document.getElementById('statusViewer').style.display = 'flex';
         setupProgressBars();
         showStatus(0);
@@ -407,7 +419,7 @@
         const img = document.getElementById('statusImg');
         const fills = document.querySelectorAll('.bar-fill');
         img.src = myStatuses[currentStatusIdx];
-
+        
         fills.forEach((fill, i) => {
             fill.style.width = '0%';
             fill.classList.remove('completed');
@@ -439,12 +451,150 @@
 
     function closeStatus() {
         statusMusic.pause();
-        statusMusic.currentTime = 0;
         document.getElementById('statusViewer').style.display = 'none';
         clearInterval(statusInterval);
+        setTimeout(() => {
+            kediType("unaku pudichi erukum nenaikuran..!! Love youuu thangamee ❤️✨");
+        }, 1500);
     }
 
-    window.onload = kediType;
+    /* ========= NEW HEART BOMB ENDING ========= */
+    function triggerHeartBombSequence() {
+        const count = 70;
+        for (let i = 0; i < count; i++) {
+            const h = document.createElement('div');
+            h.className = 'bomb-heart';
+            h.innerText = i % 2 === 0 ? "❤️" : "💖";
+            const angle = (i / (count/2)) * Math.PI;
+            const dist = 250 + Math.random() * 200;
+            h.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+            h.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+            h.style.setProperty('--rot', `${Math.random() * 360}deg`);
+            h.style.fontSize = "32px";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 2500);
+        }
+
+        setTimeout(() => {
+            const fade = document.createElement("div");
+            fade.style.position = "fixed";
+            fade.style.inset = "0";
+            fade.style.background = "black";
+            fade.style.opacity = "0";
+            fade.style.transition = "opacity 4s ease";
+            fade.style.zIndex = "5000";
+            document.body.appendChild(fade);
+
+            setTimeout(() => fade.style.opacity = "0.9", 50);
+            setTimeout(showFinalMessage, 4200);
+        }, 2000);
+    }
+
+    /* ========= FINAL MESSAGE SCENE ========= */
+    function showFinalMessage(){
+        document.body.innerHTML = `
+        <div id="finalScene" style="height:100vh; width:100vw; background: radial-gradient(circle at center, #05070d 0%, #000 70%); display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:'Dancing Script'; text-align:center; overflow:hidden;">
+            <canvas id="starCanvas" style="position:absolute; inset:0;"></canvas>
+            <div id="finalText" style="font-size:34px; max-width:700px; line-height:1.6; z-index:2; padding:20px;"></div>
+            <div id="nameStars" style="font-size:60px; letter-spacing:8px; margin-top:30px; opacity:0; z-index:2; text-shadow:0 0 15px #fff, 0 0 30px #88f; transition:opacity 3s ease;"></div>
+            <div id="finalHeart" style="font-size:70px; margin-top:40px; opacity:0; transform:scale(0.5); transition:all 2s ease; z-index:2;">❤️</div>
+            <div id="finalDate" style="margin-top:25px; font-size:18px; opacity:0; transition:opacity 3s ease; font-family:Inter; color:#aaa; z-index:2;">Our story continues…</div>
+        </div>
+        `;
+
+        const text = `No matter how many chats,
+        no matter how many fights,
+        no matter how many days pass...
+
+        I still choose you.
+
+        Everyday.
+        Again.
+        And again. 🤍`;
+
+        let i = 0;
+        const box = document.getElementById("finalText");
+
+        function type(){
+            if(i < text.length){
+                box.innerHTML += text[i] === "\n" ? "<br>" : text[i];
+                i++;
+                setTimeout(type, 55);
+            } else {
+                startStarSky();
+                setTimeout(revealNameStars, 1500);
+            }
+        }
+        type();
+    }
+
+    /* ========= STAR SKY ========= */
+    function startStarSky(){
+        const canvas = document.getElementById("starCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const stars = [];
+
+        for(let i=0;i<180;i++){
+            stars.push({
+                x: Math.random()*canvas.width,
+                y: Math.random()*canvas.height,
+                r: Math.random()*1.5,
+                o: Math.random(),
+                speed: Math.random()*0.02
+            });
+        }
+
+        function draw(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            stars.forEach(s=>{
+                s.o += s.speed;
+                const alpha = (Math.sin(s.o)+1)/2;
+                ctx.beginPath();
+                ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+                ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+
+    /* ========= NAME REVEAL ========= */
+    function revealNameStars(){
+        const el = document.getElementById("nameStars");
+        let i = 0;
+        function type(){
+            if(i < FINAL_NAME.length){
+                el.innerHTML += FINAL_NAME[i];
+                i++;
+                setTimeout(type, 400);
+            }else{
+                revealEnd();
+            }
+        }
+        el.style.opacity = "1";
+        type();
+    }
+
+    /* ========= HEART + FINAL LINE ========= */
+    function revealEnd(){
+        const heart = document.getElementById("finalHeart");
+        const date = document.getElementById("finalDate");
+        setTimeout(()=>{
+            heart.style.opacity = "1";
+            heart.style.transform = "scale(1)";
+            heart.animate([
+                {transform:"scale(1)"},
+                {transform:"scale(1.2)"},
+                {transform:"scale(1)"}
+            ],{duration:1600, iterations:Infinity});
+        },800);
+        setTimeout(()=>{ date.style.opacity="1"; },2500);
+    }
+
+    window.onload = () => { kediType(); };
 </script>
 </body>
 </html>
