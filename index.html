@@ -26,12 +26,10 @@
             overflow: hidden;
         }
 
-        /* FLYING HEARTS - BACKGROUND LAYER */
         .heart {
             position: fixed; 
             bottom: -100px;
             pointer-events: none; 
-            /* Floating BEHIND the white box (105) */
             z-index: 102; 
             animation: moveUp linear forwards;
             font-family: 'Dancing Script', cursive;
@@ -230,11 +228,15 @@
     const profilePic = document.getElementById('profilePic');
     const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
-    const myStatuses = [
-        "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800", 
-        "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=800"
-    ];
+    // --- AUDIO SETTINGS ---
+    // Replace with your actual audio links
+    const letterMusic = new Audio('maheswaran3010.github.io/Eppadi Vandhaayo.mp3'); 
+    const statusMusic = new Audio('maheswaran3010.github.io/Pularaadha-MassTamilan.org.mp3');
+    
+    letterMusic.loop = true;
+    statusMusic.loop = true;
 
+    const myStatuses = ["../0.jpg", "../01.jpg", "../1.jpg", "../2.jpg", "../3.jpeg", "../4.jpeg", "../5.jpeg", "../6.jpeg", "../7.jpeg", "../8.jpeg", "../9.jpeg", "../10.jpeg"];
     const script = ["Hey sexxy darling ...😘", "inaiku valentine's day ah?", "Happy valentine's day 💖", "So I made something for you", "love.var"];
     let step = 0;
     let heartInterval;
@@ -276,12 +278,10 @@
 
     function spawnHeart() {
         const h = document.createElement('div'); h.className = 'heart';
-        const items = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","kutty","sexxy darling"];
+        const items = ["❤️", "💖", "💝", "🤍", "💕","kedi","papu","kutty","sexxy darling","Kedi","bujuk bujuk","Thanga mailu","Sexy doll","Boobiee kuty","Kedi paiyaa","Keddi papu"];
         h.innerText = items[Math.floor(Math.random() * items.length)];
-        
         h.style.color = "#a01a58"; 
         if(h.innerText.length < 3) h.style.color = "#700a0a"; 
-        
         h.style.left = Math.random() * 100 + "vw"; 
         h.style.fontSize = Math.random() * 10 + 20 + "px";
         h.style.animationDuration = Math.random() * 2 + 5 + "s";
@@ -302,11 +302,9 @@
     function accessDenied() {
         alert("Sorry ungaluku ulla idam ila getout");
         clearInterval(heartInterval);
-        // Hide all screens and return to chat
         document.getElementById('stageWho').classList.add('hidden');
         document.getElementById('stageEnvelope').classList.add('hidden');
         document.getElementById('stageValentine').classList.add('hidden');
-        
         setTimeout(async () => {
             statusLabel.innerText = "typing..."; 
             await new Promise(r => setTimeout(r, 2000));
@@ -335,14 +333,29 @@
     function showLetter() {
         document.getElementById('stageWho').classList.add('hidden');
         document.getElementById('stageLetter').classList.remove('hidden');
+        
+        // Start Letter Music
+        letterMusic.play().catch(e => console.log("Audio blocked"));
+
         const box = document.getElementById('letterBox');
         const text = "We started our journey with affection… and even today I still wonder how you slowly became a part of me 🤍\n\nEvery day felt new with you. Our love kept growing — like a full moon that never fades and never returns to darkness 🌙\n\nThat one week when we matched outfits without planning… that was our golden time. Every day had a feeling, every moment had meaning ✨\n\nAs days passed, we changed… we grew… and quietly our love grew with us 🌱\n\nThe silly romantic tests we attended, and the late nights we spent talking — they are locked safely inside the secret vault of my heart 🔐\n\nThe day I came to meet you in Chennai was planned long before… but every minute there still felt magical 🏙️\n\nThat private beach where we took pictures… the waves, the wind, and you — it still feels unreal 🌊\n\nYou preparing yourself for my sister's marriage meant more to me than I ever said. I didn't ruin anything intentionally… I only wanted to always be honest with you 🤍\n\nNo matter what happened between us, one thing never changed — I always wanted you to be happy\n\nMaybe love is not always about staying… sometimes it's about remembering gently and wishing silently 🌙\n\nI don't know where life will take us next, but a part of my heart will always smile when it thinks of you\n\nSo today, I just wish you peace, warmth, and a life that treats you kindly\n\nHappy Valentine's Day ❤️";
         let i = 0;
-        function type() { if (i < text.length) { box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i); i++; box.scrollTop = box.scrollHeight; setTimeout(type, 35); } }
+        function type() { 
+            if (i < text.length) { 
+                box.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i); 
+                i++; 
+                box.scrollTop = box.scrollHeight; 
+                setTimeout(type, 100); // 100ms for slow typing
+            } 
+        }
         type();
     }
 
     function finishLetter() {
+        // Stop Letter Music
+        letterMusic.pause();
+        letterMusic.currentTime = 0;
+
         clearInterval(heartInterval);
         document.getElementById('stageLetter').classList.add('hidden');
         profilePic.classList.add('has-status');
@@ -365,6 +378,10 @@
 
     function startStatus() {
         if (!profilePic.classList.contains('has-status')) return;
+        
+        // Start Status Music
+        statusMusic.play().catch(e => console.log("Audio blocked"));
+
         document.getElementById('statusViewer').style.display = 'flex';
         setupProgressBars();
         showStatus(0);
@@ -418,6 +435,10 @@
     }
 
     function closeStatus() {
+        // Stop Status Music
+        statusMusic.pause();
+        statusMusic.currentTime = 0;
+
         document.getElementById('statusViewer').style.display = 'none';
         clearInterval(statusInterval);
     }
